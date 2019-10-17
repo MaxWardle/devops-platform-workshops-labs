@@ -117,6 +117,30 @@ objects:
         release: maxwardle-loki
       name: maxwardle-loki-headless
   - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: ${LOKI_SERVICE_NAME}
+      labels:
+        app: ${LOKI_SERVICE_NAME}
+      annotations:
+        {}
+    spec:
+      replicas: 1
+      minReadySeconds: 0
+      selector:
+        matchLabels:
+          app: ${LOKI_SERVICE_NAME}
+      strategy:
+        type: RollingUpdate
+      template:
+        metadata:
+          labels:
+            app: ${LOKI_SERVICE_NAME}
+          annotations:
+            prometheus.io/port: http-metrics
+            prometheus.io/scrape: "true"
+            our-awesome-metadata: "nothing to see here"
+  - apiVersion: apps/v1
     kind: StatefulSet
     spec:
       podManagementPolicy: OrderedReady
