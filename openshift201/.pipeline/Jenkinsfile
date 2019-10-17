@@ -15,7 +15,7 @@ node {
             sh "oc process -f openshift201/templates/loki_template.yaml | oc apply -f - -n ${DEV_NAMESPACE}"
 
             sh "echo Wait for service to be up"
-            // openshiftVerifyService apiURL: '', authToken: '', namespace: "${DEV_NAMESPACE}", svcName: "${LOKI_SERVICE}", verbose: 'false'
+            openshiftVerifyService apiURL: '', authToken: '', namespace: "${DEV_NAMESPACE}", svcName: "${LOKI_SERVICE}", verbose: 'false'
         }
     }
 }
