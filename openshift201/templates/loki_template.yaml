@@ -87,7 +87,6 @@ objects:
     namespace: 4zq6uj-maxwardle-ocp201-tst-dev
     resourceVersion: "1022628098"
     selfLink: /api/v1/namespaces/4zq6uj-maxwardle-ocp201-tst-dev/services/maxwardle-loki
-    uid: 00afcefa-f053-11e9-af44-005056832285
   spec:
     clusterIP: 172.50.151.211
     ports:
@@ -118,7 +117,6 @@ objects:
     namespace: 4zq6uj-maxwardle-ocp201-tst-dev
     resourceVersion: "1022628093"
     selfLink: /api/v1/namespaces/4zq6uj-maxwardle-ocp201-tst-dev/services/maxwardle-loki-headless
-    uid: 00a2b9f8-f053-11e9-af44-005056832285
   spec:
     clusterIP: None
     ports:
@@ -150,7 +148,6 @@ objects:
     namespace: 4zq6uj-maxwardle-ocp201-tst-dev
     resourceVersion: "1022720796"
     selfLink: /apis/apps/v1/namespaces/4zq6uj-maxwardle-ocp201-tst-dev/statefulsets/maxwardle-loki
-    uid: 00b9a2e2-f053-11e9-af44-005056832285
   spec:
     podManagementPolicy: OrderedReady
     replicas: 1
