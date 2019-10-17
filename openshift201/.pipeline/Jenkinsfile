@@ -4,6 +4,7 @@
 def TOOLS_NAMESPACE = "4zq6uj-maxwardle-ocp201-tst-tools"
 def DEV_NAMESPACE = "4zq6uj-maxwardle-ocp201-tst-dev"
 def PROD_NAMESPACE = "4zq6uj-maxwardle-ocp201-tst-prod"
+def LOKI_SERVICE = "maxwardle-loki"
 
 
 //Pipeline
@@ -13,6 +14,8 @@ node {
             checkout scm
             sh "oc process -f openshift201/templates/loki_template.yaml | oc apply -f - -n ${DEV_NAMESPACE}"
 
+            sh "echo Wait for service to be up"
+            openshiftVerifyService apiURL: '', authToken: '', namespace: "${DEV_NAMESPACE}", svcName: "${LOKI_SERVICE}", verbose: 'false'
         }
     }
 }
