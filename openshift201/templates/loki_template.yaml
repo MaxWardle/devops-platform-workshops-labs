@@ -2,234 +2,212 @@ apiVersion: template.openshift.io/v1
 kind: Template
 labels:
   template: loki-template
-message: |-
-  The following service(s) have been created in your project: ${GRAFANA_SERVICE_NAME}.
-  For more information about using this template, including OpenShift considerations, contact the rocketchat community.
+message: >-
+  The following service(s) have been created in your project:
+  ${GRAFANA_SERVICE_NAME}.
+
+  For more information about using this template, including OpenShift
+  considerations, contact the rocketchat community.
 metadata:
   annotations:
-    description: |-
+    description: >-
       Grafana Template for use in OpenShift 201 lab without persistent storage. 
 
-      WARNING: Any configuration stored will be lost upon pod destruction. ConfigMaps should be used for codified configuration. 
+
+      WARNING: Any configuration stored will be lost upon pod destruction.
+      ConfigMaps should be used for codified configuration. 
     iconClass: icon-other-unknown
     openshift.io/display-name: loki-openshift201
-    openshift.io/documentation-url: https://github.com/bcdevops/devops-platform-workshops
+    openshift.io/documentation-url: 'https://github.com/bcdevops/devops-platform-workshops'
     openshift.io/long-description: This template provides a sample Grafana configuration for lab purposes.
     openshift.io/provider-display-name: BCDevOps
-    openshift.io/support-url: https://github.com/bcdevops/
-    tags: monitoring,loki
+    openshift.io/support-url: 'https://github.com/bcdevops/'
+    tags: 'monitoring,loki'
   name: loki-template
 parameters:
   - name: NAME
     value: maxwardle-loki
-objects: 
-- apiVersion: v1
-  stringData:
-    loki_template.yaml: |-
-      auth_enabled: false
-      chunk_store_config:
-        max_look_back_period: 0
-      ingester:
-        chunk_block_size: 262144
-        chunk_idle_period: 3m
-        chunk_retain_period: 1m
-        lifecycler:
-          ring:
-            kvstore:
-              store: inmemory
-            replication_factor: 1
-      limits_config:
-        enforce_metric_name: false
-        reject_old_samples: true
-        reject_old_samples_max_age: 168h
-      schema_config:
-        configs:
-        - from: 2018-04-15
-          index:
-            period: 168h
-            prefix: index_
-          object_store: filesystem
-          schema: v9
-          store: boltdb
-      server:
-        http_listen_port: 3100
-      storage_config:
-        boltdb:
-          directory: /data/loki/index
-        filesystem:
-          directory: /data/loki/chunks
-      table_manager:
-        retention_deletes_enabled: false
-        retention_period: 0
-  kind: Secret
-  type: Opaque
-  metadata:
-    annotations: {}
-    labels:
-      app: ${NAME}
-      chart: loki-0.16.0
-      heritage: Tiller
-      release: ${NAME}
-    name: ${NAME}
-- apiVersion: v1
-  kind: Service
-  metadata:
-    annotations:
-      kubectl.kubernetes.io/last-applied-configuration: |
-        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"loki","chart":"loki-0.16.0","heritage":"Tiller","release":"maxwardle-loki"},"name":"maxwardle-loki","namespace":"4zq6uj-maxwardle-ocp201-tst-dev"},"spec":{"ports":[{"name":"http-metrics","port":3100,"protocol":"TCP","targetPort":"http-metrics"}],"selector":{"app":"loki","release":"maxwardle-loki"},"type":"ClusterIP"}}
-    creationTimestamp: 2019-10-16T20:24:49Z
-    labels:
-      app: loki
-      chart: loki-0.16.0
-      heritage: Tiller
-      release: maxwardle-loki
-    name: maxwardle-loki
-    namespace: 4zq6uj-maxwardle-ocp201-tst-dev
-    resourceVersion: "1022628098"
-    selfLink: /api/v1/namespaces/4zq6uj-maxwardle-ocp201-tst-dev/services/maxwardle-loki
-  spec:
-    clusterIP: 172.50.151.211
-    ports:
-    - name: http-metrics
-      port: 3100
-      protocol: TCP
-      targetPort: http-metrics
-    selector:
-      app: loki
-      release: maxwardle-loki
-    sessionAffinity: None
-    type: ClusterIP
-  status:
-    loadBalancer: {}
-- apiVersion: v1
-  kind: Service
-  metadata:
-    annotations:
-      kubectl.kubernetes.io/last-applied-configuration: |
-        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"loki","chart":"loki-0.16.0","heritage":"Tiller","release":"maxwardle-loki"},"name":"maxwardle-loki-headless","namespace":"4zq6uj-maxwardle-ocp201-tst-dev"},"spec":{"clusterIP":"None","ports":[{"name":"http-metrics","port":3100,"protocol":"TCP","targetPort":"http-metrics"}],"selector":{"app":"loki","release":"maxwardle-loki"}}}
-    creationTimestamp: 2019-10-16T20:24:49Z
-    labels:
-      app: loki
-      chart: loki-0.16.0
-      heritage: Tiller
-      release: maxwardle-loki
-    name: maxwardle-loki-headless
-    namespace: 4zq6uj-maxwardle-ocp201-tst-dev
-    resourceVersion: "1022628093"
-    selfLink: /api/v1/namespaces/4zq6uj-maxwardle-ocp201-tst-dev/services/maxwardle-loki-headless
-  spec:
-    clusterIP: None
-    ports:
-    - name: http-metrics
-      port: 3100
-      protocol: TCP
-      targetPort: http-metrics
-    selector:
-      app: loki
-      release: maxwardle-loki
-    sessionAffinity: None
-    type: ClusterIP
-  status:
-    loadBalancer: {}
-- apiVersion: apps/v1
-  kind: StatefulSet
-  metadata:
-    annotations:
-      kubectl.kubernetes.io/last-applied-configuration: |
-        {"apiVersion":"apps/v1","kind":"StatefulSet","metadata":{"annotations":{},"labels":{"app":"loki","chart":"loki-0.16.0","heritage":"Tiller","release":"maxwardle-loki"},"name":"maxwardle-loki","namespace":"4zq6uj-maxwardle-ocp201-tst-dev"},"spec":{"podManagementPolicy":"OrderedReady","replicas":1,"selector":{"matchLabels":{"app":"loki","release":"maxwardle-loki"}},"serviceName":"maxwardle-loki-headless","template":{"metadata":{"annotations":{"checksum/config":"e58492c87016a6f426d60771baba50ba1e3e8c2db64172936a86f46d884112ff","prometheus.io/port":"http-metrics","prometheus.io/scrape":"true"},"labels":{"app":"loki","name":"loki","release":"maxwardle-loki"}},"spec":{"affinity":{},"containers":[{"args":["-config.file=/etc/loki/loki.yaml"],"env":null,"image":"grafana/loki:v0.3.0","imagePullPolicy":"IfNotPresent","livenessProbe":{"httpGet":{"path":"/ready","port":"http-metrics"},"initialDelaySeconds":45},"name":"loki","ports":[{"containerPort":3100,"name":"http-metrics","protocol":"TCP"}],"readinessProbe":{"httpGet":{"path":"/ready","port":"http-metrics"},"initialDelaySeconds":45},"resources":{},"volumeMounts":[{"mountPath":"/etc/loki","name":"config"},{"mountPath":"/data","name":"storage","subPath":null}]}],"nodeSelector":{},"serviceAccountName":"default","terminationGracePeriodSeconds":30,"tolerations":[],"volumes":[{"name":"config","secret":{"secretName":"maxwardle-loki"}},{"emptyDir":{},"name":"storage"}]}},"updateStrategy":{"type":"RollingUpdate"}}}
-    creationTimestamp: 2019-10-16T20:24:49Z
-    generation: 2
-    labels:
-      app: loki
-      chart: loki-0.16.0
-      heritage: Tiller
-      release: maxwardle-loki
-    name: maxwardle-loki
-    namespace: 4zq6uj-maxwardle-ocp201-tst-dev
-    resourceVersion: "1022720796"
-    selfLink: /apis/apps/v1/namespaces/4zq6uj-maxwardle-ocp201-tst-dev/statefulsets/maxwardle-loki
-  spec:
-    podManagementPolicy: OrderedReady
-    replicas: 1
-    revisionHistoryLimit: 10
-    selector:
-      matchLabels:
+objects:
+  - apiVersion: v1
+    stringData:
+      loki_template.yaml: |-
+        auth_enabled: false
+        chunk_store_config:
+          max_look_back_period: 0
+        ingester:
+          chunk_block_size: 262144
+          chunk_idle_period: 3m
+          chunk_retain_period: 1m
+          lifecycler:
+            ring:
+              kvstore:
+                store: inmemory
+              replication_factor: 1
+        limits_config:
+          enforce_metric_name: false
+          reject_old_samples: true
+          reject_old_samples_max_age: 168h
+        schema_config:
+          configs:
+          - from: 2018-04-15
+            index:
+              period: 168h
+              prefix: index_
+            object_store: filesystem
+            schema: v9
+            store: boltdb
+        server:
+          http_listen_port: 3100
+        storage_config:
+          boltdb:
+            directory: /data/loki/index
+          filesystem:
+            directory: /data/loki/chunks
+        table_manager:
+          retention_deletes_enabled: false
+          retention_period: 0
+    kind: Secret
+    type: Opaque
+    metadata:
+      annotations: {}
+      labels:
+        app: '${NAME}'
+        chart: loki-0.16.0
+        heritage: Tiller
+        release: '${NAME}'
+      name: '${NAME}'
+  - apiVersion: v1
+    kind: Service
+    spec:
+      ports:
+        - name: http-metrics
+          port: 3100
+          protocol: TCP
+          targetPort: http-metrics
+      selector:
         app: loki
         release: maxwardle-loki
-    serviceName: maxwardle-loki-headless
-    template:
-      metadata:
-        annotations:
-          checksum/config: e58492c87016a6f426d60771baba50ba1e3e8c2db64172936a86f46d884112ff
-          prometheus.io/port: http-metrics
-          prometheus.io/scrape: "true"
-        creationTimestamp: null
-        labels:
+      sessionAffinity: None
+      type: ClusterIP
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/last-applied-configuration: >
+          {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"loki","chart":"loki-0.16.0","heritage":"Tiller","release":"maxwardle-loki"},"name":"maxwardle-loki","namespace":"4zq6uj-maxwardle-ocp201-tst-dev"},"spec":{"ports":[{"name":"http-metrics","port":3100,"protocol":"TCP","targetPort":"http-metrics"}],"selector":{"app":"loki","release":"maxwardle-loki"},"type":"ClusterIP"}}
+      labels:
+        app: loki
+        chart: loki-0.16.0
+        heritage: Tiller
+        release: maxwardle-loki
+      name: maxwardle-loki
+  - apiVersion: v1
+    kind: Service
+    spec:
+      ports:
+        - name: http-metrics
+          port: 3100
+          protocol: TCP
+          targetPort: http-metrics
+      selector:
+        app: loki
+        release: maxwardle-loki
+      sessionAffinity: None
+      type: ClusterIP
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/last-applied-configuration: >
+          {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"loki","chart":"loki-0.16.0","heritage":"Tiller","release":"maxwardle-loki"},"name":"maxwardle-loki-headless","namespace":"4zq6uj-maxwardle-ocp201-tst-dev"},"spec":{"clusterIP":"None","ports":[{"name":"http-metrics","port":3100,"protocol":"TCP","targetPort":"http-metrics"}],"selector":{"app":"loki","release":"maxwardle-loki"}}}
+      labels:
+        app: loki
+        chart: loki-0.16.0
+        heritage: Tiller
+        release: maxwardle-loki
+      name: maxwardle-loki-headless
+  - apiVersion: apps/v1
+    kind: StatefulSet
+    spec:
+      podManagementPolicy: OrderedReady
+      replicas: 1
+      revisionHistoryLimit: 10
+      selector:
+        matchLabels:
           app: loki
-          name: loki
           release: maxwardle-loki
-      spec:
-        affinity: {}
-        containers:
-        - args:
-          - -config.file=/etc/loki/loki.yaml
-          image: grafana/loki:v0.3.0
-          imagePullPolicy: IfNotPresent
-          livenessProbe:
-            failureThreshold: 3
-            httpGet:
-              path: /ready
-              port: http-metrics
-              scheme: HTTP
-            initialDelaySeconds: 45
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 1
-          name: loki
-          ports:
-          - containerPort: 3100
-            name: http-metrics
-            protocol: TCP
-          readinessProbe:
-            failureThreshold: 3
-            httpGet:
-              path: /ready
-              port: http-metrics
-              scheme: HTTP
-            initialDelaySeconds: 45
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 1
-          resources: {}
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-          volumeMounts:
-          - mountPath: /etc/loki
-            name: config
-          - mountPath: /data
-            name: storage
-        dnsPolicy: ClusterFirst
-        restartPolicy: Always
-        schedulerName: default-scheduler
-        securityContext: {}
-        serviceAccount: default
-        serviceAccountName: default
-        terminationGracePeriodSeconds: 30
-        volumes:
-        - name: config
-          secret:
-            defaultMode: 420
-            secretName: maxwardle-loki
-        - emptyDir: {}
-          name: storage
-    updateStrategy:
-      type: RollingUpdate
-  status:
-    collisionCount: 0
-    currentReplicas: 1
-    currentRevision: maxwardle-loki-65fd44785f
-    observedGeneration: 2
-    readyReplicas: 1
-    replicas: 1
-    updateRevision: maxwardle-loki-65fd44785f
-    updatedReplicas: 1
+      serviceName: maxwardle-loki-headless
+      template:
+        metadata:
+          annotations:
+            checksum/config: e58492c87016a6f426d60771baba50ba1e3e8c2db64172936a86f46d884112ff
+            prometheus.io/port: http-metrics
+            prometheus.io/scrape: 'true'
+          creationTimestamp: null
+          labels:
+            app: loki
+            name: loki
+            release: maxwardle-loki
+        spec:
+          affinity: {}
+          containers:
+            - args:
+                - '-config.file=/etc/loki/loki.yaml'
+              image: 'grafana/loki:v0.3.0'
+              imagePullPolicy: IfNotPresent
+              livenessProbe:
+                failureThreshold: 3
+                httpGet:
+                  path: /ready
+                  port: http-metrics
+                  scheme: HTTP
+                initialDelaySeconds: 45
+                periodSeconds: 10
+                successThreshold: 1
+                timeoutSeconds: 1
+              name: loki
+              ports:
+                - containerPort: 3100
+                  name: http-metrics
+                  protocol: TCP
+              readinessProbe:
+                failureThreshold: 3
+                httpGet:
+                  path: /ready
+                  port: http-metrics
+                  scheme: HTTP
+                initialDelaySeconds: 45
+                periodSeconds: 10
+                successThreshold: 1
+                timeoutSeconds: 1
+              resources: {}
+              terminationMessagePath: /dev/termination-log
+              terminationMessagePolicy: File
+              volumeMounts:
+                - mountPath: /etc/loki
+                  name: config
+                - mountPath: /data
+                  name: storage
+          dnsPolicy: ClusterFirst
+          restartPolicy: Always
+          schedulerName: default-scheduler
+          securityContext: {}
+          serviceAccount: default
+          serviceAccountName: default
+          terminationGracePeriodSeconds: 30
+          volumes:
+            - name: config
+              secret:
+                defaultMode: 420
+                secretName: maxwardle-loki
+            - emptyDir: {}
+              name: storage
+      updateStrategy:
+        type: RollingUpdate
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/last-applied-configuration: >
+          {"apiVersion":"apps/v1","kind":"StatefulSet","metadata":{"annotations":{},"labels":{"app":"loki","chart":"loki-0.16.0","heritage":"Tiller","release":"maxwardle-loki"},"name":"maxwardle-loki","namespace":"4zq6uj-maxwardle-ocp201-tst-dev"},"spec":{"podManagementPolicy":"OrderedReady","replicas":1,"selector":{"matchLabels":{"app":"loki","release":"maxwardle-loki"}},"serviceName":"maxwardle-loki-headless","template":{"metadata":{"annotations":{"checksum/config":"e58492c87016a6f426d60771baba50ba1e3e8c2db64172936a86f46d884112ff","prometheus.io/port":"http-metrics","prometheus.io/scrape":"true"},"labels":{"app":"loki","name":"loki","release":"maxwardle-loki"}},"spec":{"affinity":{},"containers":[{"args":["-config.file=/etc/loki/loki.yaml"],"env":null,"image":"grafana/loki:v0.3.0","imagePullPolicy":"IfNotPresent","livenessProbe":{"httpGet":{"path":"/ready","port":"http-metrics"},"initialDelaySeconds":45},"name":"loki","ports":[{"containerPort":3100,"name":"http-metrics","protocol":"TCP"}],"readinessProbe":{"httpGet":{"path":"/ready","port":"http-metrics"},"initialDelaySeconds":45},"resources":{},"volumeMounts":[{"mountPath":"/etc/loki","name":"config"},{"mountPath":"/data","name":"storage","subPath":null}]}],"nodeSelector":{},"serviceAccountName":"default","terminationGracePeriodSeconds":30,"tolerations":[],"volumes":[{"name":"config","secret":{"secretName":"maxwardle-loki"}},{"emptyDir":{},"name":"storage"}]}},"updateStrategy":{"type":"RollingUpdate"}}}
+      generation: 2
+      labels:
+        app: loki
+        chart: loki-0.16.0
+        heritage: Tiller
+        release: maxwardle-loki
+      name: maxwardle-loki
