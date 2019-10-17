@@ -119,9 +119,9 @@ objects:
   - apiVersion: apps/v1
     kind: Deployment
     metadata:
-      name: ${LOKI_SERVICE_NAME}
+      name: ${NAME}
       labels:
-        app: ${LOKI_SERVICE_NAME}
+        app: ${NAME}
       annotations:
         {}
     spec:
@@ -129,13 +129,13 @@ objects:
       minReadySeconds: 0
       selector:
         matchLabels:
-          app: ${LOKI_SERVICE_NAME}
+          app: ${NAME}
       strategy:
         type: RollingUpdate
       template:
         metadata:
           labels:
-            app: ${LOKI_SERVICE_NAME}
+            app: ${NAME}
           annotations:
             prometheus.io/port: http-metrics
             prometheus.io/scrape: "true"
