@@ -195,9 +195,6 @@ objects:
       updateStrategy:
         type: RollingUpdate
     metadata:
-      annotations:
-        kubectl.kubernetes.io/last-applied-configuration: >
-          {"apiVersion":"apps/v1","kind":"StatefulSet","metadata":{"annotations":{},"labels":{"app":"loki","chart":"loki-0.16.0","heritage":"Tiller","release":"maxwardle-loki"},"name":"maxwardle-loki","namespace":"4zq6uj-maxwardle-ocp201-tst-dev"},"spec":{"podManagementPolicy":"OrderedReady","replicas":1,"selector":{"matchLabels":{"app":"loki","release":"maxwardle-loki"}},"serviceName":"maxwardle-loki-headless","template":{"metadata":{"annotations":{"checksum/config":"e58492c87016a6f426d60771baba50ba1e3e8c2db64172936a86f46d884112ff","prometheus.io/port":"http-metrics","prometheus.io/scrape":"true"},"labels":{"app":"loki","name":"loki","release":"maxwardle-loki"}},"spec":{"affinity":{},"containers":[{"args":["-config.file=/etc/loki/loki.yaml"],"env":null,"image":"grafana/loki:v0.3.0","imagePullPolicy":"IfNotPresent","livenessProbe":{"httpGet":{"path":"/ready","port":"http-metrics"},"initialDelaySeconds":45},"name":"loki","ports":[{"containerPort":3100,"name":"http-metrics","protocol":"TCP"}],"readinessProbe":{"httpGet":{"path":"/ready","port":"http-metrics"},"initialDelaySeconds":45},"resources":{},"volumeMounts":[{"mountPath":"/etc/loki","name":"config"},{"mountPath":"/data","name":"storage","subPath":null}]}],"nodeSelector":{},"serviceAccountName":"default","terminationGracePeriodSeconds":30,"tolerations":[],"volumes":[{"name":"config","secret":{"secretName":"maxwardle-loki"}},{"emptyDir":{},"name":"storage"}]}},"updateStrategy":{"type":"RollingUpdate"}}}
       generation: 2
       labels:
         app: loki
