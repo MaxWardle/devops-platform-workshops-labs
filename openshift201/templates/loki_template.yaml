@@ -85,17 +85,17 @@ objects:
           protocol: TCP
           targetPort: http-metrics
       selector:
-        app: loki
-        release: maxwardle-loki
+        app: ${NAME}
+        release: ${NAME}
       sessionAffinity: None
       type: ClusterIP
     metadata:
       labels:
-        app: loki
+        app: ${NAME}
         chart: loki-0.16.0
         heritage: Tiller
-        release: maxwardle-loki
-      name: maxwardle-loki
+        release: ${NAME}
+      name: ${NAME}
   - apiVersion: v1
     kind: Service
     spec:
@@ -105,17 +105,17 @@ objects:
           protocol: TCP
           targetPort: http-metrics
       selector:
-        app: loki
-        release: maxwardle-loki
+        app: ${NAME}
+        release: ${NAME}
       sessionAffinity: None
       type: ClusterIP
     metadata:
       labels:
-        app: loki
+        app: ${NAME}
         chart: loki-0.16.0
         heritage: Tiller
-        release: maxwardle-loki
-      name: maxwardle-loki-headless
+        release: ${NAME}
+      name: ${NAME}-headless
   - apiVersion: apps/v1
     kind: StatefulSet
     spec:
@@ -124,9 +124,9 @@ objects:
       revisionHistoryLimit: 10
       selector:
         matchLabels:
-          app: loki
-          release: maxwardle-loki
-      serviceName: maxwardle-loki-headless
+          app: ${NAME}
+          release: ${NAME}
+      serviceName: ${NAME}-headless
       template:
         metadata:
           annotations:
@@ -135,9 +135,9 @@ objects:
             prometheus.io/scrape: 'true'
           creationTimestamp: null
           labels:
-            app: loki
-            name: loki
-            release: maxwardle-loki
+            app: ${NAME}
+            name: ${NAME}
+            release: ${NAME}
         spec:
           affinity: {}
           containers:
@@ -155,7 +155,7 @@ objects:
                 periodSeconds: 10
                 successThreshold: 1
                 timeoutSeconds: 1
-              name: loki
+              name: ${NAME}
               ports:
                 - containerPort: 3100
                   name: http-metrics
@@ -189,7 +189,7 @@ objects:
             - name: config
               secret:
                 defaultMode: 420
-                secretName: maxwardle-loki
+                secretName: ${NAME}
             - emptyDir: {}
               name: storage
       updateStrategy:
@@ -197,8 +197,8 @@ objects:
     metadata:
       generation: 2
       labels:
-        app: loki
+        app: ${NAME}
         chart: loki-0.16.0
         heritage: Tiller
-        release: maxwardle-loki
-      name: maxwardle-loki
+        release: ${NAME}
+      name: ${NAME}
