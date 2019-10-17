@@ -90,9 +90,6 @@ objects:
       sessionAffinity: None
       type: ClusterIP
     metadata:
-      annotations:
-        kubectl.kubernetes.io/last-applied-configuration: >
-          {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"loki","chart":"loki-0.16.0","heritage":"Tiller","release":"maxwardle-loki"},"name":"maxwardle-loki","namespace":"4zq6uj-maxwardle-ocp201-tst-dev"},"spec":{"ports":[{"name":"http-metrics","port":3100,"protocol":"TCP","targetPort":"http-metrics"}],"selector":{"app":"loki","release":"maxwardle-loki"},"type":"ClusterIP"}}
       labels:
         app: loki
         chart: loki-0.16.0
@@ -113,9 +110,6 @@ objects:
       sessionAffinity: None
       type: ClusterIP
     metadata:
-      annotations:
-        kubectl.kubernetes.io/last-applied-configuration: >
-          {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"loki","chart":"loki-0.16.0","heritage":"Tiller","release":"maxwardle-loki"},"name":"maxwardle-loki-headless","namespace":"4zq6uj-maxwardle-ocp201-tst-dev"},"spec":{"clusterIP":"None","ports":[{"name":"http-metrics","port":3100,"protocol":"TCP","targetPort":"http-metrics"}],"selector":{"app":"loki","release":"maxwardle-loki"}}}
       labels:
         app: loki
         chart: loki-0.16.0
